@@ -49,5 +49,10 @@ namespace Proyecto_Compiladores_2023
 		{
 			BotonConvertirPosfija.Enabled = false;
 		}
+
+		private void label5_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
