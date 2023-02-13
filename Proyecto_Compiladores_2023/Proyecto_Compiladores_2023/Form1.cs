@@ -27,12 +27,13 @@ namespace Proyecto_Compiladores_2023
 			ExpresionRegular.Text = expresionRegular; //Muestra la expresion regular con & y los rangos extendidos			
 			txtPostfija.Text = postfija(expresionRegular); //Convierte la expresión regular en postfija
 		}
-		//[Ivan & Oscar Almendariz ]
+		//[Oscar]
 		private string postfija(string expresion_regular)
 		{
 			return "";
 		}
-		//[Oscar Almendariz]
+
+		//[Ivan]
 		private string convertir_rango(string expresion_regular)
 		{
 			return "";
