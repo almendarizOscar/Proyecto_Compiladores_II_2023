@@ -7,3 +7,4 @@ C:\Users\ELLA\Desktop\UASLP\1. Compiladores\Proyecto_Compiladores_II_2023\Proyec
 C:\Users\ELLA\Desktop\UASLP\1. Compiladores\Proyecto_Compiladores_II_2023\Proyecto_Compiladores_2023\Proyecto_Compiladores_2023\obj\Debug\Proyecto_Compiladores_2023.csproj.CoreCompileInputs.cache
 C:\Users\ELLA\Desktop\UASLP\1. Compiladores\Proyecto_Compiladores_II_2023\Proyecto_Compiladores_2023\Proyecto_Compiladores_2023\obj\Debug\Proyecto_Compiladores_2023.exe
 C:\Users\ELLA\Desktop\UASLP\1. Compiladores\Proyecto_Compiladores_II_2023\Proyecto_Compiladores_2023\Proyecto_Compiladores_2023\obj\Debug\Proyecto_Compiladores_2023.pdb
+C:\Users\ELLA\Desktop\UASLP\1. Compiladores\Proyecto_Compiladores_II_2023\Proyecto_Compiladores_2023\Proyecto_Compiladores_2023\obj\Debug\Proyecto_Compiladores_2023.Form1.resources
