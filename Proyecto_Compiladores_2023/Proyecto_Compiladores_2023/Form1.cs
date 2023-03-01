@@ -12,9 +12,17 @@ namespace Proyecto_Compiladores_2023
 {
 	public partial class Form1 : Form
 	{
+		private List<char> alfabeto;
+		ManejadorAFN manejador;
+		Automata afn;
+
 		public Form1()
 		{
 			InitializeComponent();
+			button3.Enabled = false;
+			this.StartPosition = FormStartPosition.CenterScreen;
+
+			manejador = new ManejadorAFN();
 		}
 	
 		//Boton que contiene la secuencia de pasos que se deben aplicar para obtener la expresión posfija de
@@ -32,7 +40,7 @@ namespace Proyecto_Compiladores_2023
 			TextBox1.Text = expresionRegular; 	
 			//Aplicamos el algoritmo de conversión a posfija
 			TextBox2.Text = postfija(expresionRegular);
-			
+			button3.Enabled = true;
 		}
 
 		//Algoritmo para convertir la expresión regular en posfija
@@ -209,7 +217,63 @@ namespace Proyecto_Compiladores_2023
 
 		private void button2_Click(object sender, EventArgs e)
 		{			
-			TextBox1.Text = TextBox2.Text = "";
+			TextBox1.Text = TextBox2.Text = textBox4.Text = textBox3.Text =  "";
+			button3.Enabled = false;
+		}
+
+		private void button3_Click(object sender, EventArgs e)
+		{
+			Button1.Enabled = true;
+			afn = Construir_AFN(TextBox2.Text);
+
+
+			//4to: Limpiamos la tabla antes de usarla
+			dataGridView1.Rows.Clear();
+			dataGridView1.Columns.Clear();
+
+			//5to: Ponemos columnas
+			poner_columnas();
+
+			//6to: Antes de insertar filas a la tabla de transiciones, le mandamos al manejador el datgreedview
+			//para que esta clase sea la encargada de manipular la herramienta
+			manejador.tabla_de_transiciones = dataGridView1; //Imprime las filas
+
+			//7mo: Ordenamos la lista de estados del autómata
+			afn.estado = afn.estado.OrderBy(x => x.id).ToList(); //Ordenamiento de los estados por su id
+
+			//8vo: Rellenamos la tabla de transicones
+			manejador.insetar_fila_en_la_tabla_transiciones(afn, alfabeto);
+
+			//Información del autómata
+			textBox4.Text = afn.estado.Count.ToString();
+			textBox3.Text = afn.numero_de_transiciones_epsilon().ToString();
+			
+		}
+
+		private Automata Construir_AFN(string postfija)
+		{
+			//1ro: Construimos el AFN
+			Automata AFN = manejador.construir_AFN(postfija); //Creamos un AFN a partir de la expresión regular
+
+			//2do: Obtenemos el alfabeto
+			alfabeto = manejador.obtener_alfabeto(postfija);
+
+			//3ro: Enumeramos los estados del automata de 0 a n.
+			manejador.contador = 0;
+			manejador.enumerar_estados(AFN.estado_de_inicio); //Recorrido en profundidad
+			manejador.poner_visitados_en_falso(AFN.estado_de_inicio);
+
+			return AFN;
+		}
+		private void poner_columnas()
+		{
+			//Insertar las columnas
+			dataGridView1.Columns.Add("Estados", "Estados");
+			for (int i = 0; i < alfabeto.Count; i++)
+			{
+				dataGridView1.Columns.Add("Columna" + i, alfabeto[i].ToString());
+			}
+
 		}
 	}
 }
