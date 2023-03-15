@@ -44,8 +44,15 @@
 			this.textBox4 = new System.Windows.Forms.TextBox();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
 			this.button3 = new System.Windows.Forms.Button();
+			this.label11 = new System.Windows.Forms.Label();
+			this.textBox5 = new System.Windows.Forms.TextBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.txtEdosAFD = new System.Windows.Forms.TextBox();
+			this.tablaAFD = new System.Windows.Forms.DataGridView();
+			this.button4 = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.tablaAFD)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label5
@@ -144,6 +151,12 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.label11);
+			this.groupBox1.Controls.Add(this.textBox5);
+			this.groupBox1.Controls.Add(this.label9);
+			this.groupBox1.Controls.Add(this.txtEdosAFD);
+			this.groupBox1.Controls.Add(this.tablaAFD);
+			this.groupBox1.Controls.Add(this.button4);
 			this.groupBox1.Controls.Add(this.label7);
 			this.groupBox1.Controls.Add(this.textBox3);
 			this.groupBox1.Controls.Add(this.label6);
@@ -158,7 +171,7 @@
 			this.groupBox1.Controls.Add(this.TextBox2);
 			this.groupBox1.Location = new System.Drawing.Point(12, 62);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(495, 481);
+			this.groupBox1.Size = new System.Drawing.Size(869, 481);
 			this.groupBox1.TabIndex = 13;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Análisis Léxico";
@@ -220,12 +233,69 @@
 			this.button3.UseVisualStyleBackColor = true;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Font = new System.Drawing.Font("Microsoft Tai Le", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label11.Location = new System.Drawing.Point(535, 159);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(125, 14);
+			this.label11.TabIndex = 25;
+			this.label11.Text = "Estados de aceptación:";
+			// 
+			// textBox5
+			// 
+			this.textBox5.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.textBox5.Location = new System.Drawing.Point(666, 153);
+			this.textBox5.Name = "textBox5";
+			this.textBox5.ReadOnly = true;
+			this.textBox5.Size = new System.Drawing.Size(83, 24);
+			this.textBox5.TabIndex = 24;
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Font = new System.Drawing.Font("Microsoft Tai Le", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label9.Location = new System.Drawing.Point(548, 130);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(112, 14);
+			this.label9.TabIndex = 23;
+			this.label9.Text = "Número de estados:";
+			// 
+			// txtEdosAFD
+			// 
+			this.txtEdosAFD.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.txtEdosAFD.Location = new System.Drawing.Point(686, 124);
+			this.txtEdosAFD.Name = "txtEdosAFD";
+			this.txtEdosAFD.ReadOnly = true;
+			this.txtEdosAFD.Size = new System.Drawing.Size(63, 24);
+			this.txtEdosAFD.TabIndex = 22;
+			// 
+			// tablaAFD
+			// 
+			this.tablaAFD.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.tablaAFD.Location = new System.Drawing.Point(415, 183);
+			this.tablaAFD.Name = "tablaAFD";
+			this.tablaAFD.RowHeadersWidth = 20;
+			this.tablaAFD.Size = new System.Drawing.Size(334, 292);
+			this.tablaAFD.TabIndex = 21;
+			// 
+			// button4
+			// 
+			this.button4.Location = new System.Drawing.Point(418, 154);
+			this.button4.Name = "button4";
+			this.button4.Size = new System.Drawing.Size(111, 23);
+			this.button4.TabIndex = 20;
+			this.button4.Text = "Construir AFD";
+			this.button4.UseVisualStyleBackColor = true;
+			this.button4.Click += new System.EventHandler(this.button4_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-			this.ClientSize = new System.Drawing.Size(813, 557);
+			this.ClientSize = new System.Drawing.Size(903, 549);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label5);
@@ -236,6 +306,7 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.tablaAFD)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -259,6 +330,12 @@
 		private System.Windows.Forms.TextBox textBox4;
 		private System.Windows.Forms.DataGridView dataGridView1;
 		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.TextBox textBox5;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.TextBox txtEdosAFD;
+		private System.Windows.Forms.DataGridView tablaAFD;
+		private System.Windows.Forms.Button button4;
 	}
 }
 

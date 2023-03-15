@@ -15,6 +15,7 @@ namespace Proyecto_Compiladores_2023
 		private List<char> alfabeto;
 		ManejadorAFN manejador;
 		Automata afn;
+		AFD afd;
 
 		public Form1()
 		{
@@ -23,6 +24,10 @@ namespace Proyecto_Compiladores_2023
 			this.StartPosition = FormStartPosition.CenterScreen;
 
 			manejador = new ManejadorAFN();
+			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+			dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+			tablaAFD.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+			tablaAFD.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 		}
 	
 		//Boton que contiene la secuencia de pasos que se deben aplicar para obtener la expresión posfija de
@@ -216,9 +221,14 @@ namespace Proyecto_Compiladores_2023
 		}
 
 		private void button2_Click(object sender, EventArgs e)
-		{			
-			TextBox1.Text = TextBox2.Text = textBox4.Text = textBox3.Text =  "";
-			button3.Enabled = false;
+		{
+
+			TextBox1.Text = TextBox2.Text = textBox4.Text = textBox3.Text = textBox5.Text = txtEdosAFD.Text = "";
+			button3.Enabled = button4.Enabled = true;
+			dataGridView1.Rows.Clear();
+			dataGridView1.Columns.Clear();
+			tablaAFD.Rows.Clear();
+			tablaAFD.Columns.Clear();
 		}
 
 		private void button3_Click(object sender, EventArgs e)
@@ -247,7 +257,7 @@ namespace Proyecto_Compiladores_2023
 			//Información del autómata
 			textBox4.Text = afn.estado.Count.ToString();
 			textBox3.Text = afn.numero_de_transiciones_epsilon().ToString();
-			
+			button3.Enabled = false;
 		}
 
 		private Automata Construir_AFN(string postfija)
@@ -274,6 +284,23 @@ namespace Proyecto_Compiladores_2023
 				dataGridView1.Columns.Add("Columna" + i, alfabeto[i].ToString());
 			}
 
+		}
+
+		private void button4_Click(object sender, EventArgs e)
+		{
+			//Creamos una instancia del AFD
+			afd = new AFD(afn, alfabeto);
+			//Generamos el AFD
+			afd.GeneraAFD(afn.estado_de_inicio);
+			//Llenamos la tabla de transiciones del AFD
+			afd.llenaTabla(tablaAFD);
+			//Mostramos el número de estados del AFD
+			txtEdosAFD.Text = afd.Destados.Count.ToString();
+
+			afd.encontrar_nodos_de_aceptacion(afn.estado_aceptacion);
+			textBox5.Text = "";
+			textBox5.Text = afd.estados_de_aceptacion; //Estados de aceptación
+			button4.Enabled = false;
 		}
 	}
 }
