@@ -223,7 +223,8 @@ namespace Proyecto_Compiladores_2023
 		private void button2_Click(object sender, EventArgs e)
 		{
 
-			TextBox1.Text = TextBox2.Text = textBox4.Text = textBox3.Text = textBox5.Text = txtEdosAFD.Text = "";
+			TextBox1.Text = TextBox2.Text = textBox4.Text = textBox3.Text = textBox5.Text = txtEdosAFD.Text = textBox6.Text = "";
+			label10.Text = "";
 			button3.Enabled = button4.Enabled = true;
 			dataGridView1.Rows.Clear();
 			dataGridView1.Columns.Clear();
@@ -302,5 +303,27 @@ namespace Proyecto_Compiladores_2023
 			textBox5.Text = afd.estados_de_aceptacion; //Estados de aceptación
 			button4.Enabled = false;
 		}
+
+		//En esta sección está el código necesario para analizar el lexema y validarlo
+		#region Analizador del lexema
+		//Botón para validar el lexema 
+		private void button5_Click(object sender, EventArgs e)
+		{
+			/*	Dentro de la clase AFD hay un método para hacer la validación del lexema
+				Solo hay que pasarle la cadena de texto del lexema */
+			if (afd.validar_Lexema(textBox6.Text))
+			{
+				label10.Text = "El lexema " + textBox6.Text + " es VALIDO.";
+				label10.ForeColor = Color.ForestGreen;
+			}
+			else
+			{
+				label10.Text = "El lexema " + textBox6.Text + " es INVALIDO.";
+				label10.ForeColor = Color.Red;
+			}
+			textBox6.Text = "";
+		}
+		#endregion
+
 	}
 }

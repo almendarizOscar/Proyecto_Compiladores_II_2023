@@ -236,43 +236,65 @@ namespace Proyecto_Compiladores_2023
 			}
 		}
 
-		//Poner visitados en falso
+		
+
+		
+		//En esta sección está el procedimiento para validar un lexema con el AFD
+		#region Analizador de lexema
+		public bool validar_Lexema(string lexema)
+		{
+			//lexema es una variable global
+			this.lexema = lexema;
+			//i_lexema es la variable que guarda el índice cuando se recorre el lexema en el algoritmo bpf
+			i_Lexema = 0;
+			//Primero marcar los nodos del AFD como no visitados
+			poner_visitados_falso();
+			return bpf(Destados[0], Destados[0]);
+		}
+		//Función para poner todos los estados del grafo en falso antes de hacer cualquier recorrido
 		public void poner_visitados_falso()
 		{
 			foreach (EstadoAFD e in Destados)
 				e.visitado = false;
 		}
 
-		//Algoritmo de busqueda en profundidad
+		/*
+		  Algoritmo de busqueda en profundidad 
+		  Este algoritmo es recursivo, y hay que pasarle como parametro un estado anterior y un estado siguiente.
+
+		  El método utiliza el lexema, que es una variable global para esta clase.
+		*/
 		public bool bpf(EstadoAFD anterior, EstadoAFD estado)
 		{
+			//Caso base
+			//Si i_lexema es igual al tamaño del lexema quiere decir que ya llego al final del recorrido del lexema
+			//Si se llego al final del lexema verificamos si el estado en donde estamos es un estado de aceptación.
+			//De ser esto cierto quiere decir que el lexema es correcto.
 			if ((i_Lexema == lexema.Length) &&
 				(estado.Soy_Nodo_de_Aceptacion))
 				return true;
+			//Caso recursivo
+			//Si el indice del lexema es menor que el tamaño del lexema quiere decir que aun no llegamos al final
 			if (i_Lexema < lexema.Length)
 			{
+				//Hacemos un recorrido de cada una de las transiciones del estado en donde estamos
 				foreach (TransicionAFD t in estado.transiciones)
 				{
-					//Si el siguiente nodo no ha sido visitado, entonces visitar
+					//Si el simbolo de la transición es igual al simbolo del lexema en donde vamos, entonces usamos 
+					//esa transición para llegar al otro estado
 					if (t.simbolo == lexema[i_Lexema])
 					{
 						//Incrementamos el índice que apunta al siguiente caracter del lexema
 						i_Lexema += 1;
+						//Ahora, el estado anterior es el estado en donde estamos ahora, y el estado siguiente es el
+						//estado al que apunta la transición que elejimos con ese símbolo
 						return bpf(estado, t.estado_siguiente);
 					}
 				}
 			}
 			return false;
 		}
-
-		public bool validar_Lexema(string lexema)
-		{
-			this.lexema = lexema;
-			i_Lexema = 0;
-			//Primero marcar los nodos del AFD como no visitados
-			poner_visitados_falso();
-			return bpf(Destados[0], Destados[0]);
-		}
+		#endregion
 
 	}
 }
