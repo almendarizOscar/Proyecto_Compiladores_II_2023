@@ -246,16 +246,8 @@ namespace Proyecto_Compiladores_2023
 			//lexema es una variable global
 			this.lexema = lexema;
 			//i_lexema es la variable que guarda el índice cuando se recorre el lexema en el algoritmo bpf
-			i_Lexema = 0;
-			//Primero marcar los nodos del AFD como no visitados
-			poner_visitados_falso();
+			i_Lexema = 0;						
 			return bpf(Destados[0], Destados[0]);
-		}
-		//Función para poner todos los estados del grafo en falso antes de hacer cualquier recorrido
-		public void poner_visitados_falso()
-		{
-			foreach (EstadoAFD e in Destados)
-				e.visitado = false;
 		}
 
 		/*
@@ -266,13 +258,7 @@ namespace Proyecto_Compiladores_2023
 		*/
 		public bool bpf(EstadoAFD anterior, EstadoAFD estado)
 		{
-			//Caso base
-			//Si i_lexema es igual al tamaño del lexema quiere decir que ya llego al final del recorrido del lexema
-			//Si se llego al final del lexema verificamos si el estado en donde estamos es un estado de aceptación.
-			//De ser esto cierto quiere decir que el lexema es correcto.
-			if ((i_Lexema == lexema.Length) &&
-				(estado.Soy_Nodo_de_Aceptacion))
-				return true;
+			
 			//Caso recursivo
 			//Si el indice del lexema es menor que el tamaño del lexema quiere decir que aun no llegamos al final
 			if (i_Lexema < lexema.Length)
@@ -292,7 +278,12 @@ namespace Proyecto_Compiladores_2023
 					}
 				}
 			}
-			return false;
+
+			//Caso base
+			//Si i_lexema es igual al tamaño del lexema quiere decir que ya llego al final del recorrido del lexema
+			//Si se llego al final del lexema verificamos si el estado en donde estamos es un estado de aceptación.
+			//De ser esto cierto quiere decir que el lexema es correcto.
+			return ((i_Lexema == lexema.Length) && (estado.Soy_Nodo_de_Aceptacion)) ? true : false;
 		}
 		#endregion
 
