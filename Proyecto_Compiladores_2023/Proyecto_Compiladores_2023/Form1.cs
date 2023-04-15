@@ -8,10 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Proyecto_Compiladores_2023
 {
 	public partial class Form1 : Form
 	{
+
+		//Lista de caracteres que pertenecen al lenguaje (incluyendo ε) y que no se repiten. No incluye operadores
+		//Esta lista se utiliza para los nombres de los encabezados de las columnas de la tabla de transiciones
+		private List<string> palabras_reservadas = new List<string>() { "if", "then", "else", "end", "repeat", "until", "read", "write" };
+		private List<string> simbolos_especiales = new List<string>() { "+", "-", "*", "/", "=", "<", ">", "(", ")", ";", ":=" };
+		private List<string> otros_identificadores = new List<string>() { "numero", "identificador" };
+
 		private List<char> alfabeto;
 		ManejadorAFN manejador;
 		Automata afn;
@@ -29,197 +37,7 @@ namespace Proyecto_Compiladores_2023
 			tablaAFD.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 			tablaAFD.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 		}
-	
-		//Boton que contiene la secuencia de pasos que se deben aplicar para obtener la expresión posfija de
-		//la expresión regular
-		private void btnRegularPostija_Click(object sender, EventArgs e)
-		{			
-			//Obtener la cadena de texto que contiene el Textbox donde se ingresa la expresión regular 
-			string expresionRegular = this.TextBox1.Text; 
-			//Ahora, lo que se quese encuentre entre corchetes se va a normalizar. 
-			expresionRegular = convertir_rango(expresionRegular);
-			//Agregamos & donde sea necesario dentro de la expresión regular
-			expresionRegular = agregar_amperson(expresionRegular);
-			//Una vez que ya se normalizó la expresión regular la volvemos a mostrar en pantallas
-			//En el mismo textbox donde se escribio
-			TextBox1.Text = expresionRegular; 	
-			//Aplicamos el algoritmo de conversión a posfija
-			TextBox2.Text = postfija(expresionRegular);
-			button3.Enabled = true;
-		}
-
-		//Algoritmo para convertir la expresión regular en posfija
-		private string postfija(string expresion_regular)
-		{
-			Stack<char> pila = new Stack<char>(); 
-			bool bandera;
-			char caracter;
-			char ultimoOperador;
-			string postfija = ""; 					
-			int i = 0;
-			int Tamaño_expresión_regular = expresion_regular.Length; 
-			while (i < Tamaño_expresión_regular)
-			{
-				
-				caracter = expresion_regular[i];
-
-				if (caracter == '(')
-					pila.Push(caracter);
-				else if (caracter == ')')
-					postfija += POP(pila);
-				else if (caracter == '+' || caracter == '*' || caracter == '?' || caracter == '&' || caracter == '|')
-				{
-					bandera = true; 
-					while (bandera)
-					{
-						ultimoOperador = (pila.Count == 0) ? ' ' : pila.ElementAt(0);
-						if (pila.Count == 0 ||
-							ultimoOperador == '(' ||
-							prioridad(ultimoOperador) < prioridad(caracter))
-						{
-							pila.Push(caracter); 
-							bandera = false;
-						}
-						else
-							postfija += pila.Pop();
-					}
-				}
-				else 
-					postfija += caracter; 
-				
-				i++; 
-			}
-
-			if (pila.Count > 0)
-				postfija += POP(pila);
-
-			return postfija; //Regresamos la expresión postfija
-		}	
-
-		//Obtener la prioridad del operador que se le envía por parámetro
-		private int prioridad(char operador)
-		{
-			if (operador == '+' || operador == '*' || operador == '?') 
-				return 3;
-			else if (operador == '&') 
-				return 2;
-			else if (operador == '|')
-				return 1;
-			else
-				return 6;			
-		}
-
-		//POP nos sirve para retirar un elemento de la pila
-		private string POP(Stack<char> pila)
-		{
-			string operadores = "";
-			char operador;		
-
-			while (true)
-			{
-				operador = pila.Pop();
-				if (operador == '(')
-					break;
-				else
-					operadores += operador;
-
-				if (pila.Count == 0)
-					break;
-			}
-			return operadores;
-		}
-
-		private string convertir_rango(string expresion_regular)
-		{
-			string nueva_expresion = ""; 
-			int i = 0;
-			bool estoy_dentro_de_los_corchetes = false;
-
-			while (i < expresion_regular.Length)
-			{
-				if (estoy_dentro_de_los_corchetes) 
-				{
-					if (expresion_regular[i + 1] == ']')
-					{ 
-						nueva_expresion += ')';
-						estoy_dentro_de_los_corchetes = false;
-						i += 1;
-
-					}
-					else
-					{
-						if (expresion_regular[i + 1] == '-')
-						{
-							
-							int inicial = ASCII(expresion_regular[i].ToString());
-							int final = ASCII(expresion_regular[i + 2].ToString());
-
-							for (int ini = inicial + 1; ini <= final; ini++)
-							{
-								nueva_expresion += '|';
-								nueva_expresion += Char(ini);
-							}
-							i += 1;
-						}
-						else
-						{
-							nueva_expresion += '|';
-							nueva_expresion += expresion_regular[i + 1];
-						}
-					}
-				}
-				else
-				{
-					if (expresion_regular[i] == '[') 
-					{
-						nueva_expresion += '('; 
-						nueva_expresion += expresion_regular[i + 1];
-						estoy_dentro_de_los_corchetes = true;
-
-					}
-					else
-						nueva_expresion += expresion_regular[i];
-				}
-				i += 1;
-			}
-			return nueva_expresion;
-		}
-	
-		private string agregar_amperson(string expresion_regular)
-		{
-			string nueva_expresion = "" + expresion_regular[0]; 
-
-			for (int i = 0, j = 1; i < expresion_regular.Length - 1; i++, j++)
-			{
-				if (expresion_regular[i] != '(' && expresion_regular[j] != ')')
-				{  
-					if (expresion_regular[j] != '*' && expresion_regular[j] != '?' && expresion_regular[j] != '+') 
-					{
-						if (expresion_regular[i] != '|' && expresion_regular[j] != '|') 
-						{
-							nueva_expresion += "&";
-						}
-					}
-				}
-				nueva_expresion += expresion_regular[j];
-			}
-			return nueva_expresion;
-		}
-		//Método que devuelve el código ASCII de un caracter
-		private int ASCII(string caracter)
-		{
-			Byte[] ASCIIvalues = Encoding.ASCII.GetBytes(caracter);
-			string entero = ASCIIvalues[0].ToString();
-			return int.Parse(entero);
-		}
-		//Método que devulve el caracter correspondiente al número ASCII de 'valor'
-		private char Char(int valor)
-		{
-			int val = valor;
-			char ch = (char)val;
-			return ch;
-		}
-
+		//Método para limpiar
 		private void button2_Click(object sender, EventArgs e)
 		{
 
@@ -231,7 +49,12 @@ namespace Proyecto_Compiladores_2023
 			tablaAFD.Rows.Clear();
 			tablaAFD.Columns.Clear();
 		}
+		
+		
 
+
+
+		#region Metodos para construcción del AFN
 		private void button3_Click(object sender, EventArgs e)
 		{
 			Button1.Enabled = true;
@@ -260,7 +83,6 @@ namespace Proyecto_Compiladores_2023
 			textBox3.Text = afn.numero_de_transiciones_epsilon().ToString();
 			button3.Enabled = false;
 		}
-
 		private Automata Construir_AFN(string postfija)
 		{
 			//1ro: Construimos el AFN
@@ -286,7 +108,9 @@ namespace Proyecto_Compiladores_2023
 			}
 
 		}
+		#endregion
 
+		#region Métodos para la construcción del AFD
 		private void button4_Click(object sender, EventArgs e)
 		{
 			//Creamos una instancia del AFD
@@ -303,6 +127,199 @@ namespace Proyecto_Compiladores_2023
 			textBox5.Text = afd.estados_de_aceptacion; //Estados de aceptación
 			button4.Enabled = false;
 		}
+		#endregion
+
+		#region Elaboración de la Posfija 
+		//Boton que contiene la secuencia de pasos que se deben aplicar para obtener la expresión posfija de
+		//la expresión regular
+		private void btnRegularPostija_Click(object sender, EventArgs e)
+		{
+			//Obtener la cadena de texto que contiene el Textbox donde se ingresa la expresión regular 
+			string expresionRegular = this.TextBox1.Text;
+			//Ahora, lo que se quese encuentre entre corchetes se va a normalizar. 
+			expresionRegular = convertir_rango(expresionRegular);
+			//Agregamos & donde sea necesario dentro de la expresión regular
+			expresionRegular = agregar_amperson(expresionRegular);
+			//Una vez que ya se normalizó la expresión regular la volvemos a mostrar en pantallas
+			//En el mismo textbox donde se escribio
+			TextBox1.Text = expresionRegular;
+			//Aplicamos el algoritmo de conversión a posfija
+			TextBox2.Text = postfija(expresionRegular);
+			button3.Enabled = true;
+		}
+		//Algoritmo para convertir la expresión regular en posfija
+		private string postfija(string expresion_regular)
+		{
+			Stack<char> pila = new Stack<char>();
+			bool bandera;
+			char caracter;
+			char ultimoOperador;
+			string postfija = "";
+			int i = 0;
+			int Tamaño_expresión_regular = expresion_regular.Length;
+			while (i < Tamaño_expresión_regular)
+			{
+
+				caracter = expresion_regular[i];
+
+				if (caracter == '(')
+					pila.Push(caracter);
+				else if (caracter == ')')
+					postfija += POP(pila);
+				else if (caracter == '+' || caracter == '*' || caracter == '?' || caracter == '&' || caracter == '|')
+				{
+					bandera = true;
+					while (bandera)
+					{
+						ultimoOperador = (pila.Count == 0) ? ' ' : pila.ElementAt(0);
+						if (pila.Count == 0 ||
+							ultimoOperador == '(' ||
+							prioridad(ultimoOperador) < prioridad(caracter))
+						{
+							pila.Push(caracter);
+							bandera = false;
+						}
+						else
+							postfija += pila.Pop();
+					}
+				}
+				else
+					postfija += caracter;
+
+				i++;
+			}
+
+			if (pila.Count > 0)
+				postfija += POP(pila);
+
+			return postfija; //Regresamos la expresión postfija
+		}
+
+		//Obtener la prioridad del operador que se le envía por parámetro
+		private int prioridad(char operador)
+		{
+			if (operador == '+' || operador == '*' || operador == '?')
+				return 3;
+			else if (operador == '&')
+				return 2;
+			else if (operador == '|')
+				return 1;
+			else
+				return 6;
+		}
+
+		//POP nos sirve para retirar un elemento de la pila
+		private string POP(Stack<char> pila)
+		{
+			string operadores = "";
+			char operador;
+
+			while (true)
+			{
+				operador = pila.Pop();
+				if (operador == '(')
+					break;
+				else
+					operadores += operador;
+
+				if (pila.Count == 0)
+					break;
+			}
+			return operadores;
+		}
+
+		private string convertir_rango(string expresion_regular)
+		{
+			string nueva_expresion = "";
+			int i = 0;
+			bool estoy_dentro_de_los_corchetes = false;
+
+			while (i < expresion_regular.Length)
+			{
+				if (estoy_dentro_de_los_corchetes)
+				{
+					if (expresion_regular[i + 1] == ']')
+					{
+						nueva_expresion += ')';
+						estoy_dentro_de_los_corchetes = false;
+						i += 1;
+
+					}
+					else
+					{
+						if (expresion_regular[i + 1] == '-')
+						{
+
+							int inicial = ASCII(expresion_regular[i].ToString());
+							int final = ASCII(expresion_regular[i + 2].ToString());
+
+							for (int ini = inicial + 1; ini <= final; ini++)
+							{
+								nueva_expresion += '|';
+								nueva_expresion += Char(ini);
+							}
+							i += 1;
+						}
+						else
+						{
+							nueva_expresion += '|';
+							nueva_expresion += expresion_regular[i + 1];
+						}
+					}
+				}
+				else
+				{
+					if (expresion_regular[i] == '[')
+					{
+						nueva_expresion += '(';
+						nueva_expresion += expresion_regular[i + 1];
+						estoy_dentro_de_los_corchetes = true;
+
+					}
+					else
+						nueva_expresion += expresion_regular[i];
+				}
+				i += 1;
+			}
+			return nueva_expresion;
+		}
+
+		private string agregar_amperson(string expresion_regular)
+		{
+			string nueva_expresion = "" + expresion_regular[0];
+
+			for (int i = 0, j = 1; i < expresion_regular.Length - 1; i++, j++)
+			{
+				if (expresion_regular[i] != '(' && expresion_regular[j] != ')')
+				{
+					if (expresion_regular[j] != '*' && expresion_regular[j] != '?' && expresion_regular[j] != '+')
+					{
+						if (expresion_regular[i] != '|' && expresion_regular[j] != '|')
+						{
+							nueva_expresion += "&";
+						}
+					}
+				}
+				nueva_expresion += expresion_regular[j];
+			}
+			return nueva_expresion;
+		}
+		//Método que devuelve el código ASCII de un caracter
+		private int ASCII(string caracter)
+		{
+			Byte[] ASCIIvalues = Encoding.ASCII.GetBytes(caracter);
+			string entero = ASCIIvalues[0].ToString();
+			return int.Parse(entero);
+		}
+		//Método que devulve el caracter correspondiente al número ASCII de 'valor'
+		private char Char(int valor)
+		{
+			int val = valor;
+			char ch = (char)val;
+			return ch;
+		}
+
+		#endregion
 
 		//En esta sección está el código necesario para analizar el lexema y validarlo
 		#region Analizador del lexema
@@ -325,5 +342,89 @@ namespace Proyecto_Compiladores_2023
 		}
 		#endregion
 
+
+		#region Métodos para el Léxico
+		//Este es método nos devuelve un AFD que nos
+		private AFD construir_AFD_de_la_expresión_regular(string txtPostfija)
+		{
+			//Paso 1: Antes de obtener el AFD, primero debemos de obtener la expresión posfija de la expresión regular.
+			//Entonces, convertimos las las expresiones de tipo [] a su forma normal, agregamso & donde sea necesario y
+			//obtenemos la expresion posfijaa
+			txtPostfija = convertir_rango(txtPostfija);
+			txtPostfija = agregar_amperson(txtPostfija);
+			txtPostfija = postfija(txtPostfija); //Convierte la expresión regular en postfija
+
+			//Paso 2: Construimos el AFN de la expresión regular
+			Automata AFN = Construir_AFN(txtPostfija); //Este método también obtiene el alfabeto a partir de la ER
+			AFN.estado = AFN.estado.OrderBy(x => x.id).ToList(); //Ordenamiento de los estados por su id
+			manejador.Llena_TablaEstados(AFN, alfabeto);
+
+			//Paso 3: construimos el AFD de la expresión regular
+			AFD elAFD = new AFD(AFN, alfabeto);
+			elAFD.GeneraAFD(AFN.estado_de_inicio);
+			elAFD.encontrar_nodos_de_aceptacion(AFN.estado_aceptacion);
+
+			return elAFD;
+		}
+
+		private void btnIdentificarTokens_Click(object sender, EventArgs e)
+		{
+			//Paso 1: Tenemos que obtener el AFD para el identificador y para el número
+			AFD afd_identificador = construir_AFD_de_la_expresión_regular(TextBox_Identificador.Text);
+			AFD afd_numero = construir_AFD_de_la_expresión_regular(TextBox_Numero.Text);
+
+			//Paso 2:Limpiamos la tabla antes de usarlo
+			DataGredView_Tokens.Rows.Clear();
+
+			//Paso 3: Tratamos el programa
+			//Tomamos el código que está en la entrada de texto y elimina los saltos de línea, los retornos y las tabulaciones.
+			//No se eliminan los espacios entre palabras.
+			string programa = TextBox_Programa.Text.Replace("\n", "").Replace("\r", "").Replace("\t", " ");
+			//El método "Split" divide una cadena de texto en subcadenas más pequeñas basándose en un delimitador especificado y devuelve un arreglo de las subcadenas resultantes.
+			//En este caso, se utiliza el espacio en blanco como delimitador, para dividir la cadena de texto "programa" en subcadenas más pequeñas en cada lugar donde se encuentre
+			//un espacio en blanco.
+			string[] tokens = programa.Split(' ');
+
+			//Paso 4: Como útimo paso vamos a clasificar cada uno de los símbolos del programa
+			int count = 0;
+			foreach (string token in tokens)
+			{
+				if (token.Length > 0)
+				{
+					//Agregamos una nueva fila en la tabla
+					DataGredView_Tokens.Rows.Add();
+					//Esta primera condicional lo que hace es verifica si el símbolo que se analiza es una palabra reservada, es un símbolo especial,
+					//o algún otro identificador.					
+					if (palabras_reservadas.IndexOf(token) >= 0 || simbolos_especiales.IndexOf(token) >= 0 || otros_identificadores.IndexOf(token) >= 0)
+					{
+						DataGredView_Tokens.Rows[count].Cells[0].Value = token;
+					}					
+					//Esta condicional verifica si es un nombre de una variable
+					else if (afd_identificador.validar_Lexema(token))
+					{
+						DataGredView_Tokens.Rows[count].Cells[0].Value = "identificador";
+					}
+					//Este condicional verifica si es un némero
+					else if (afd_numero.validar_Lexema(token))
+					{
+						DataGredView_Tokens.Rows[count].Cells[0].Value = "número";
+					}
+					//Si no fue ninguna de las anteriores, enotnces es un error
+					else
+					{
+						DataGredView_Tokens.Rows[count].Cells[0].Value = "Error léxico";
+						DataGredView_Tokens.Rows[count].Cells[0].Style.ForeColor = Color.Red;
+						DataGredView_Tokens.Rows[count].Cells[1].Style.ForeColor = Color.Red;
+					}
+					
+					DataGredView_Tokens.Rows[count].Cells[1].Value = token;
+					//Pasamos al siguiente símbolo
+					count++;
+				}
+			}
+		}
+		#endregion
+
 	}
 }
+

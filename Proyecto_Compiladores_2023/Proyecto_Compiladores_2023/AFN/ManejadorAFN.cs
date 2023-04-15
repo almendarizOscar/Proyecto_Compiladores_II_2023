@@ -12,6 +12,8 @@ namespace Proyecto_Compiladores_2023
 	{
 		public DataGridView tabla_de_transiciones;
 		public int contador;
+
+
 		//Algoritmo para la construcción de un AFN
 		//La expresión regular ya está en formato postfija
 		public Automata construir_AFN(string expresíon_regular)
