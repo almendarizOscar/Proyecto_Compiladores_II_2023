@@ -220,149 +220,6 @@ namespace Proyecto_Compiladores_2023
 
 
 
-		#region Metodos para probar los algoritmos para Colección LR(0) Canónica
-		/************************************************************************************************************************************/
-		//Prueba para la gramatica aumentada
-		public static void pruba_G_aumentada(ExpresionFormalDeG G)
-		{
-			gramatica_Aumentada(G);
-			informacion.Text += "Terminales: ";
-			foreach (string simbolo in G_aumentada.Terminal)
-				informacion.Text += simbolo + ", ";
-			informacion.Text += Environment.NewLine + "No Terminales: ";
-			foreach (string simbolo in G_aumentada.NoTerminal)
-				informacion.Text += simbolo + ", ";
-			informacion.Text += Environment.NewLine + "Simbolo incial: " + G_aumentada.SimboloInicial;
-			informacion.Text += Environment.NewLine + "P: ";
-			foreach (Produccion p in G_aumentada.P)
-			{
-				informacion.Text += p.convertir_a_texto();
-			}
-		}
-
-		/************************************************************************************************************************************/
-		//Prueba del algoritmo CERRADURA()
-		public static void llenar_C()
-		{
-			I i0 = new I(new List<Produccion>() {
-										new Produccion ("E'", new List<string>() {".","E"}),
-										new Produccion ("E", new List<string>() { ".", "E","+","T"}),
-										new Produccion ("E", new List<string>() { ".", "T"}),
-										new Produccion ("T", new List<string>() { ".", "T","*","F"}),
-										new Produccion ("T", new List<string>() { ".", "F"}),
-										new Produccion ("F", new List<string>() { ".", "(","E",")"}),
-										new Produccion ("F", new List<string>() { ".", "id"})
-									});
-			I i1 = new I(new List<Produccion>() {
-										new Produccion ("F", new List<string>() { "(",".","E",")"}),
-										new Produccion ("E", new List<string>() { ".", "E","+","T"}),
-										new Produccion ("E", new List<string>() { ".", "T"}),
-										new Produccion ("T", new List<string>() { ".", "T","*","F"}),
-										new Produccion ("T", new List<string>() { ".", "F"}),
-										new Produccion ("F", new List<string>() { ".", "(","E",")"}),
-										new Produccion ("F", new List<string>() { ".", "id"})
-									});
-
-			I i2 = new I(new List<Produccion>() {
-										new Produccion ("F", new List<string>() { "id","."})
-									});
-
-
-			C = new List<I>() { i0 };
-		}
-		public static void prueba_de_CERRADURA(ExpresionFormalDeG G)
-		{
-
-			gramatica_Aumentada(G);
-			llenar_C();
-			//GeneradorDeColeccionCanonica.G_aumentada.P[0].cuerpo.Insert(0, ".");
-			I coleccion = CERRADURA(
-				new List<Produccion>() {
-									new Produccion("S", new List<string>{"A","+",".","S"})
-				}
-			);
-			informacion.Text += "Numero de elementos creados: " + coleccion.elemento.Count + Environment.NewLine;
-			informacion.Text += "I " + coleccion.imprimir_coleccion();
-
-		}
-		/************************************************************************************************************************************/
-		//Prueba del algoritmo is_A() (Falta probar)
-		public static void pruba_ir_A(ExpresionFormalDeG G)
-		{
-
-			automata = new AutomataLR(); //Creamos el autómata
-			gramatica_Aumentada(G); //Creamos la gramática aumentada
-									//Crear la coleccion I0 y guardarla en C
-			I i0 = new I(new List<Produccion>() {
-										new Produccion ("S'", new List<string>() {".","S"}),
-										new Produccion ("S", new List<string>() { ".", "A","+","S"}),
-										new Produccion ("A", new List<string>() { ".", "id"}),
-										new Produccion ("A", new List<string>() { ".", "(","id",")"})
-				});
-			I i1 = new I(new List<Produccion>() {
-										new Produccion ("F", new List<string>() { "(",".","E",")"}),
-										new Produccion ("E", new List<string>() { ".", "E","+","T"}),
-										new Produccion ("E", new List<string>() { ".", "T"}),
-										new Produccion ("T", new List<string>() { ".", "T","*","F"}),
-										new Produccion ("T", new List<string>() { ".", "F"}),
-										new Produccion ("F", new List<string>() { ".", "(","E",")"}),
-										new Produccion ("F", new List<string>() { ".", "id"})
-				});
-
-			I i2 = new I(new List<Produccion>() {
-										new Produccion ("F", new List<string>() { "id","."})
-				});
-
-
-			C = new List<I>() { i0 };
-
-
-			informacion.Text += "Numero de colecciones antes de la funcion ir_A(I, x): " + C.Count + Environment.NewLine;
-			informacion.Text += "Ir_A (I0, +) " + Environment.NewLine;
-			ir_A(i0, "+");
-			informacion.Text += "Numero de colecciones: " + C.Count + Environment.NewLine;
-			C[C.Count - 1].imprimir_coleccion();
-			informacion.Text += "------------------------------------------------------------------" + Environment.NewLine;
-
-			informacion.Text += "Numero de colecciones antes de la funcion ir_A(I, x): " + C.Count + Environment.NewLine;
-			informacion.Text += "Ir_A (I0, id) " + Environment.NewLine;
-			ir_A(i0, "id");
-			informacion.Text += "Numero de colecciones: " + C.Count + Environment.NewLine;
-			informacion.Text += C[C.Count - 1].imprimir_coleccion() + Environment.NewLine;
-			informacion.Text += "------------------------------------------------------------------" + Environment.NewLine;
-
-			informacion.Text += "Numero de colecciones antes de la funcion ir_A(I, x): " + C.Count + Environment.NewLine;
-			informacion.Text += "Ir_A (I0, () " + Environment.NewLine;
-			ir_A(i0, "(");
-			informacion.Text += "Numero de colecciones: " + C.Count + Environment.NewLine;
-			informacion.Text += C[C.Count - 1].imprimir_coleccion() + Environment.NewLine;
-			informacion.Text += "------------------------------------------------------------------" + Environment.NewLine;
-
-			informacion.Text += "Numero de colecciones antes de la funcion ir_A(I, x): " + C.Count + Environment.NewLine;
-			informacion.Text += "Ir_A (I0, )) " + Environment.NewLine;
-			ir_A(i0, ")");
-			informacion.Text += "Numero de colecciones: " + C.Count + Environment.NewLine;
-			informacion.Text += C[C.Count - 1].imprimir_coleccion() + Environment.NewLine;
-			informacion.Text += "------------------------------------------------------------------" + Environment.NewLine;
-
-			informacion.Text += "Numero de colecciones antes de la funcion ir_A(I, x): " + C.Count + Environment.NewLine;
-			informacion.Text += "Ir_A (I0, S) " + Environment.NewLine;
-			ir_A(i0, "S");
-			informacion.Text += "Numero de colecciones: " + C.Count + Environment.NewLine;
-			informacion.Text += C[C.Count - 1].imprimir_coleccion() + Environment.NewLine;
-			informacion.Text += "------------------------------------------------------------------" + Environment.NewLine;
-
-			informacion.Text += "Numero de colecciones antes de la funcion ir_A(I, x): " + C.Count + Environment.NewLine;
-			informacion.Text += "Ir_A (I0, A) " + Environment.NewLine;
-			ir_A(i0, "A");
-			informacion.Text += "Numero de colecciones: " + C.Count + Environment.NewLine;
-			informacion.Text += C[C.Count - 1].imprimir_coleccion() + Environment.NewLine;
-			informacion.Text += "------------------------------------------------------------------" + Environment.NewLine;
-		}
-
-		#endregion
-
-
 
 		#region Métodos para la manipulación de colecciones y producciones
 		//[CORRECTO]
@@ -378,20 +235,8 @@ namespace Proyecto_Compiladores_2023
 			}
 			return -1;
 		}
-		public static void poner_algunas_colecciones_en_C()
-		{
-			I i0 = new I(new List<Produccion>() { });
-			I i1 = new I(new List<Produccion>() { });
-			I i2 = new I(new List<Produccion>() { });
-			I i3 = new I(new List<Produccion>() { });
-			i0.Marcado = i1.Marcado = true;
-			C = new List<I>() { i0, i1, i2, i3 };
-		}
-		public static void PROBAR_poner_algunas_colecciones_en_C()
-		{
-			poner_algunas_colecciones_en_C();
-			informacion.Text += "Próximo conjunto a leer: " + conjunto_que_aun_no_esta_marcado();
-		}
+	
+
 		/************************************************************************************************************************************/
 		//[CORRECTO]
 		//Método para saber si hay un No terminal despues del punto en una producción
@@ -425,13 +270,7 @@ namespace Proyecto_Compiladores_2023
 					return indice_del_punto + 1;
 			}
 		}
-		public static void PRUEBA_hay_un_NoTerminal_despues_del_punto(ExpresionFormalDeG G)
-		{
-			gramatica_Aumentada(G);
-			Produccion p = new Produccion("A", new List<string>() { "a", "A", "B", "." });
-			int indice_del_noTerminal = hay_un_NoTerminal_despues_del_punto(p);
-			informacion.Text += "Posicion del noterminalr : " + indice_del_noTerminal;
-		}
+
 		/************************************************************************************************************************************/
 		//[CORRECTO]
 		//Revisa si existe una producción en un conjunto de producciones
@@ -461,16 +300,7 @@ namespace Proyecto_Compiladores_2023
 			//Si hasta este punto ya se terminaron de comparar todas las producciones, entonces no existe.
 			return false;
 		}
-		public static void PRUEBA_Existe_este_elemento_en_J()
-		{
-			List<Produccion> J = new List<Produccion>() {
-									new Produccion ("A", new List<string>() { "CB"}),
-									new Produccion ("C", new List<string>() { "ε", "c"}),
-									new Produccion ("B", new List<string>() { "b"})
-				};
-			bool v = Existe_este_elemento_en_J(J, new Produccion("z", new List<string>() { "ε", "c" }));
-			informacion.Text += "Existe la produccion = " + v;
-		}
+	
 		/************************************************************************************************************************************/
 		//[CORREO]
 		//Regresa True si dos producciones son iguales
@@ -488,17 +318,7 @@ namespace Proyecto_Compiladores_2023
 			}
 			return false;
 		}
-		public static void PRUEBA_son_iguales_estos_elementos()
-		{
-			List<Produccion> J = new List<Produccion>() {
-									new Produccion ("D", new List<string>() { "C","B"}),
-									new Produccion ("C", new List<string>() { "c", "ε"}),
-									new Produccion ("B", new List<string>() { "b"}),
-									new Produccion ("A", new List<string>() { "C","B"}),
-				};
-			bool v = son_iguales_estos_elementos(J[0], J[3]);
-			informacion.Text += "Son iguales ? = " + v;
-		}
+		
 		/************************************************************************************************************************************/
 		//[CORRECTO]
 		//Método para saber si hay un No terminal despues del punto en una producción
@@ -524,14 +344,7 @@ namespace Proyecto_Compiladores_2023
 				else return false;
 			}
 		}
-		public static void PRUEBA_hay_este_simbolo_X_despues_del_punto()
-		{
 
-			Produccion p = new Produccion("A", new List<string>() { "CB", ".", "bC", "A", "BC", "." });
-
-			informacion.Text += "¿Hay este símbolo despues del punto? = "
-								+ hay_este_simbolo_X_despues_del_punto(p, "bC");
-		}
 		/************************************************************************************************************************************/
 		//[CORRECTO]
 		//Evalúa si ya existe I en C
@@ -569,38 +382,7 @@ namespace Proyecto_Compiladores_2023
 			}
 			return -1;
 		}
-		public static void PRUEBA_existe_este_conjuntoI_en_C()
-		{
-			C = new List<I>() {
-					new I(new List<Produccion>() {
-									new Produccion ("A", new List<string>() { "CB"}),
-									new Produccion ("F", new List<string>() { "cA", "b"}),
-									new Produccion ("B", new List<string>() { "d"})
-					}),
-					new I(new List<Produccion>() {
-									new Produccion ("A", new List<string>() { "CBabc"}),
-									new Produccion ("D", new List<string>() { "c", "ε"}),
-									new Produccion ("D", new List<string>() { "b"})
-					}),
-					new I(new List<Produccion>() {
-									new Produccion ("C", new List<string>() { "c"}),
-									new Produccion ("C", new List<string>() { "c", "F"}),
-									new Produccion ("C", new List<string>() { "CAA"}),
-									new Produccion ("C", new List<string>() { "F"})
-					})
-				};
-
-			I nueva_coleccion = new I(new List<Produccion>() {
-
-									new Produccion ("C", new List<string>() { "CAA"}),
-									new Produccion ("C", new List<string>() { "c", "F"}),
-									new Produccion ("C", new List<string>() { "F"})
-					});
-
-			int i_conjunto_repetido = existe_este_conjuntoI_en_C(nueva_coleccion);
-			informacion.Text += "Coleccion repetida = " + i_conjunto_repetido;
-		}
-
+		
 		#endregion
 
 
