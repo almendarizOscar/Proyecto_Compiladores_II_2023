@@ -25,6 +25,8 @@ namespace Proyecto_Compiladores_2023
 		Automata afn;
 		AFD afd;
 
+		ExpresionFormalDeG G;
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -425,6 +427,84 @@ namespace Proyecto_Compiladores_2023
 		}
 		#endregion
 
+		private void button6_Click(object sender, EventArgs e)
+		{
+			GeneradorDeColeccionCanonica.informacion = textBox5;
+			G = new ExpresionFormalDeG();
+			GeneradorDeColeccionCanonica.generar_automataLR0(G);
+			mostrar_tabla_Transiciones();
+			mostrar_colecciones(); //Se debe de generar el automata antes de usar este metodo
+
+			
+		}
+
+		private void mostrar_tabla_Transiciones()
+		{
+			dataGridView1.Rows.Clear();
+			dataGridView1.Columns.Clear();
+			poner_columnas_Tabla_AutomataLR();
+			llenarTablaAutomataLR();
+		}
+
+		private void mostrar_colecciones()
+		{
+			textBox5.Text += "Numero de Colecciones: " + GeneradorDeColeccionCanonica.C.Count + Environment.NewLine;
+			for (int i = 0; i < GeneradorDeColeccionCanonica.automata.estado.Count; i++)
+			{
+				EstadoLR estado = GeneradorDeColeccionCanonica.automata.estado[i];
+				I coleccion = estado.coleccion;
+				textBox5.Text += "I" + coleccion.id + " = " + coleccion.imprimir_coleccion() + Environment.NewLine + Environment.NewLine;
+			}
+
+		}
+		private void poner_columnas_Tabla_AutomataLR()
+		{
+			//Insertar las columnas
+			dataGridView2.Columns.Add("Estados", "Estados");
+			foreach (string terminal in GeneradorDeColeccionCanonica.G_aumentada.Terminal)
+				dataGridView2.Columns.Add(terminal, terminal);
+			foreach (string NoTerminal in GeneradorDeColeccionCanonica.G_aumentada.NoTerminal)
+				dataGridView2.Columns.Add(NoTerminal, NoTerminal);
+
+		}
+		private void llenarTablaAutomataLR()
+		{
+			//El primer recorrido de manera vertical hacia abajo, revisando estado por estado (Los estados ya estan ordenados)
+			for (int i = 0; i < GeneradorDeColeccionCanonica.automata.estado.Count; i++)
+			{
+				EstadoLR estado = GeneradorDeColeccionCanonica.automata.estado[i];
+				dataGridView2.Rows.Add(); //Agregamos una fila
+				dataGridView2.Rows[i].Cells[0].Value = estado.id;
+
+
+				int j;
+				//Recorremos primero los simbolos terminales de la gramtica
+				for (j = 0; j < GeneradorDeColeccionCanonica.G_aumentada.Terminal.Count; j++)
+				{
+					foreach (TransicionLR transicion in GeneradorDeColeccionCanonica.automata.transiciones)
+					{
+						if ((transicion.estado_inicio.id == estado.id) && (transicion.simbolo == GeneradorDeColeccionCanonica.G_aumentada.Terminal[j]))
+						{
+							dataGridView2.Rows[i].Cells[j + 1].Value = transicion.estado_siguiente.id;
+							break;
+						}
+					}
+				}
+				//Ahora recorremos por ultimo los simbolos No terminales de la gramtica
+				for (int x = 0; x < GeneradorDeColeccionCanonica.G_aumentada.NoTerminal.Count; j++, x++)
+				{
+					foreach (TransicionLR transicion in GeneradorDeColeccionCanonica.automata.transiciones)
+					{
+						if ((transicion.estado_inicio.id == estado.id) && (transicion.simbolo == GeneradorDeColeccionCanonica.G_aumentada.NoTerminal[x]))
+						{
+							dataGridView2.Rows[i].Cells[j + 1].Value = transicion.estado_siguiente.id;
+							break;
+						}
+					}
+				}
+
+			}
+		}
 	}
 }
 
