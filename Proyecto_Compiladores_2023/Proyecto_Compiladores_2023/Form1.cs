@@ -429,12 +429,16 @@ namespace Proyecto_Compiladores_2023
 
 		private void button6_Click(object sender, EventArgs e)
 		{
+			//Usamos el Textbox5 como control para mostrar informacion de los estados
 			GeneradorDeColeccionCanonica.informacion = textBox5;
-			G = new ExpresionFormalDeG();
+			//G es la Expresión formal de la gramática
+			G = new ExpresionFormalDeG(); //Cargamos la gramatica TINY
+			//Generamos la gramática aumentada del LR(0)
 			GeneradorDeColeccionCanonica.generar_automataLR0(G);
+			//Cargamos la tabla de transicones 
 			mostrar_tabla_Transiciones();
-			mostrar_colecciones(); //Se debe de generar el automata antes de usar este metodo
-
+			//Mostramos las colecciones (Se debe de generar el automata antes de usar este metodo)
+			mostrar_colecciones();
 			
 		}
 

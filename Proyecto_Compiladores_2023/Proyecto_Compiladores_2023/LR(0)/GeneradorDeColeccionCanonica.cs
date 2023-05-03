@@ -23,7 +23,7 @@ namespace Proyecto_Compiladores_2023
 		public static ExpresionFormalDeG G_aumentada; //Expresión formal de la gramatica
 		public static AutomataLR automata; //Autómata LR
 		public static List<I> C; //Conjunto de colecciones
-		public static TextBox informacion;
+		public static TextBox informacion; //Control para mostrar información de las colecciones en pantalla
 		public static int id_estado;
 
 		//Cuando llama este método crea el automata LR y el conjunto de colecciones C
@@ -39,7 +39,7 @@ namespace Proyecto_Compiladores_2023
 		#region Algoritmos para Creación de colecciones
 		private static void gramatica_Aumentada(ExpresionFormalDeG G)
 		{
-			//Vamos a insertar una nueva producción: S' -> S
+			//Vamos a agregar una nueva producción: S' -> S
 			//Será la primera producción de la lista
 			G_aumentada = G;
 			G_aumentada.P.Insert(0, new Produccion(G.SimboloInicial + "'", new List<string>() { G.SimboloInicial }));

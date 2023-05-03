@@ -53,7 +53,6 @@
     <Compile Include="AFD\TransicionAFD.cs" />
     <Compile Include="AFN\Automata.cs" />
     <Compile Include="AFN\Estado.cs" />
-    <Compile Include="AnalizadorSintacticoLR%280%29\AnalisadorSintacticoLR%280%29.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
