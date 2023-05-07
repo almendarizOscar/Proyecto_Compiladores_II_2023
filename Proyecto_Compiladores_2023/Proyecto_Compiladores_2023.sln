@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1778
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proyecto_Compiladores_2023", "Proyecto_Compiladores_2023\Proyecto_Compiladores_2023.csproj", "{DAD0654B-3F50-47B4-ABC0-D2DF8B9EC028}"
 EndProject

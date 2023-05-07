@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Proyecto_Compiladores_2023.Analisis_Sintactico;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -430,7 +431,7 @@ namespace Proyecto_Compiladores_2023
 		private void button6_Click(object sender, EventArgs e)
 		{
 			//Usamos el Textbox5 como control para mostrar informacion de los estados
-			GeneradorDeColeccionCanonica.informacion = textBox5;
+			GeneradorDeColeccionCanonica.informacion = textBox7;
 			//G es la Expresión formal de la gramática
 			G = new ExpresionFormalDeG(); //Cargamos la gramatica TINY
 			//Generamos la gramática aumentada del LR(0)
@@ -439,8 +440,38 @@ namespace Proyecto_Compiladores_2023
 			mostrar_tabla_Transiciones();
 			//Mostramos las colecciones (Se debe de generar el automata antes de usar este metodo)
 			mostrar_colecciones();
-			
+			Tabla_Analisis_Sintactico();			
 		}
+
+		private void Tabla_Analisis_Sintactico()
+		{
+            Crear_Tabla();
+            Analisis Analizador = new Analisis(G, dataGridView3, dataGridView4);
+        }
+
+		private void Crear_Tabla()
+		{
+            //Insertar las columnas
+            dataGridView3.Columns.Add("Estados", "Estados");
+            foreach (string terminal in GeneradorDeColeccionCanonica.G_aumentada.Terminal)
+                dataGridView3.Columns.Add(terminal, terminal);
+            dataGridView3.Columns.Add("$", "$");
+
+            dataGridView4.Columns.Add("Estados", "Estados");
+            foreach (string NoTerminal in GeneradorDeColeccionCanonica.G_aumentada.NoTerminal)
+                dataGridView4.Columns.Add(NoTerminal, NoTerminal);
+
+			//Insertar las filas
+			int i = 0;
+			foreach (EstadoLR estado in GeneradorDeColeccionCanonica.automata.estado)
+			{
+                dataGridView3.Rows.Add(); //Agregamos una fila en ACCION
+                dataGridView3.Rows[i].Cells[0].Value = estado.id;
+                dataGridView4.Rows.Add(); //Agregamos una fila en Ir_A
+                dataGridView4.Rows[i].Cells[0].Value = estado.id;
+                i++;
+            }
+        }
 
 		private void mostrar_tabla_Transiciones()
 		{
@@ -457,7 +488,7 @@ namespace Proyecto_Compiladores_2023
 			{
 				EstadoLR estado = GeneradorDeColeccionCanonica.automata.estado[i];
 				I coleccion = estado.coleccion;
-				textBox5.Text += "I" + coleccion.id + " = " + coleccion.imprimir_coleccion() + Environment.NewLine + Environment.NewLine;
+				textBox7.Text += "I" + coleccion.id + " = " + coleccion.imprimir_coleccion() + Environment.NewLine + Environment.NewLine;
 			}
 
 		}
@@ -511,4 +542,3 @@ namespace Proyecto_Compiladores_2023
 		}
 	}
 }
-

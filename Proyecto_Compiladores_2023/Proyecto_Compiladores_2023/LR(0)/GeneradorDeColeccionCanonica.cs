@@ -382,13 +382,8 @@ namespace Proyecto_Compiladores_2023
 			}
 			return -1;
 		}
-		
+
 		#endregion
 
-
-		private static void mensaje(string txt)
-		{
-			informacion.Text += txt + Environment.NewLine;
-		}
 	}
 }

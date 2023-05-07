@@ -22,31 +22,35 @@ namespace Proyecto_Compiladores_2023
 		//En este método se declaran las gramáticas
 		public ExpresionFormalDeG()
 		{
-			//gramatica3();			
-			gramatica_TINY();
-		}
+			//gramatica2();
+            //gramatica3();			
+            gramatica_TINY();
+        }
 
 		private void gramatica3()
 		{
-			Terminal = new List<string>() { "+", "id", "(", ")" };
-			NoTerminal = new List<string>() { "S", "A" };
-			SimboloInicial = "S";
+			Terminal = new List<string>() { "b", "c", "d"};
+			NoTerminal = new List<string>() { "A", "D" };
+			SimboloInicial = "A";
 			P = new List<Produccion>() {
-				new Produccion ("S", new List<string>() { "A","+","S"}),
-				new Produccion ("A", new List<string>() { "id"}),
-				new Produccion ("A", new List<string>() { "(","id",")"}),
+				new Produccion ("A", new List<string>() { "A","b"}),
+				new Produccion ("A", new List<string>() { "D"}),
+				new Produccion ("A", new List<string>() { "A","c"}),
+                new Produccion ("D", new List<string>() { "d"}),
+                new Produccion ("D", new List<string>() { "ε"}),
 
-			};
+            };
 		}
 		private void gramatica2()
 		{
-			Terminal = new List<string>() { "a", "d" };
-			NoTerminal = new List<string>() { "S", "D" };
+			Terminal = new List<string>() { "a", "b", "d" };
+			NoTerminal = new List<string>() { "S", "B", "D" };
 			SimboloInicial = "S";
 			P = new List<Produccion>() {
-				new Produccion ("S", new List<string>() { "a","D"}),
-				new Produccion ("D", new List<string>() { "d"}),
-				new Produccion ("D", new List<string>() { "ε"})
+				new Produccion ("S", new List<string>() { "a","B"}),
+				new Produccion ("B", new List<string>() { "b", "D" }),
+                new Produccion ("B", new List<string>() { "b"}),
+                new Produccion ("D", new List<string>() { "d"})
 			};
 		}
 		private void gramatica1()
@@ -89,7 +93,6 @@ namespace Proyecto_Compiladores_2023
 				"exp",
 				"exp-simple",
 				"op-comp",
-				"exp-simple",
 				"opsuma",
 				"term",
 				"opmult",
