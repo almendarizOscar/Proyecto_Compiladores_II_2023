@@ -22,12 +22,13 @@ namespace Proyecto_Compiladores_2023
 		//En este método se declaran las gramáticas
 		public ExpresionFormalDeG()
 		{
-			//gramatica2();
-            //gramatica3();			
-            gramatica_TINY();
+            //gramatica2();
+            gramatica3();		//funciona tambien con el ejemplo del arbol	
+            //gramatica_TINY();
         }
 
-		private void gramatica3()
+
+        private void gramatica3()
 		{
 			Terminal = new List<string>() { "b", "c", "d"};
 			NoTerminal = new List<string>() { "A", "D" };
@@ -90,10 +91,10 @@ namespace Proyecto_Compiladores_2023
 				"sent-assign",
 				"sent-read",
 				"sent-write",
-				"exp",
-				"exp-simple",
+				"exp",				
 				"op-comp",
-				"opsuma",
+                "exp-simple",
+                "opsuma",
 				"term",
 				"opmult",
 				"factor"

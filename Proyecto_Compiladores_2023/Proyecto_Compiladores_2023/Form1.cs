@@ -20,8 +20,9 @@ namespace Proyecto_Compiladores_2023
 		private List<string> palabras_reservadas = new List<string>() { "if", "then", "else", "end", "repeat", "until", "read", "write" };
 		private List<string> simbolos_especiales = new List<string>() { "+", "-", "*", "/", "=", "<", ">", "(", ")", ";", ":=" };
 		private List<string> otros_identificadores = new List<string>() { "numero", "identificador" };
-
-		private List<char> alfabeto;
+		private List<string> Errores = new List<string>(); //Lista de errores encontrados
+        private List<string> w = new List<string>();//Lista de la cadena de elementos de la cadena W
+        private List<char> alfabeto;
 		ManejadorAFN manejador;
 		Automata afn;
 		AFD afd;
@@ -39,7 +40,9 @@ namespace Proyecto_Compiladores_2023
 			dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 			tablaAFD.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 			tablaAFD.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-		}
+			label18.Text = "";
+        }
+
 		//Método para limpiar
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -51,7 +54,20 @@ namespace Proyecto_Compiladores_2023
 			dataGridView1.Columns.Clear();
 			tablaAFD.Rows.Clear();
 			tablaAFD.Columns.Clear();
-		}
+			Errores.Clear();
+			TextBox_Identificador.Clear();
+			TextBox_Numero.Clear();
+			TextBox_Programa.Clear();
+            textBox7.Text = label18.Text = "";
+			DataGredView_Tokens.Rows.Clear();
+            dataGridView2.Rows.Clear();
+            dataGridView2.Columns.Clear();
+            dataGridView3.Rows.Clear();
+            dataGridView3.Columns.Clear();
+            dataGridView4.Rows.Clear();
+            dataGridView4.Columns.Clear();
+			treeView1.Nodes.Clear();
+        }
 		
 		
 
@@ -401,20 +417,26 @@ namespace Proyecto_Compiladores_2023
 					if (palabras_reservadas.IndexOf(token) >= 0 || simbolos_especiales.IndexOf(token) >= 0 || otros_identificadores.IndexOf(token) >= 0)
 					{
 						DataGredView_Tokens.Rows[count].Cells[0].Value = token;
+						w.Add(token);
 					}					
 					//Esta condicional verifica si es un nombre de una variable
 					else if (afd_identificador.validar_Lexema(token))
 					{
 						DataGredView_Tokens.Rows[count].Cells[0].Value = "identificador";
+						w.Add("identificador");
 					}
 					//Este condicional verifica si es un némero
 					else if (afd_numero.validar_Lexema(token))
 					{
 						DataGredView_Tokens.Rows[count].Cells[0].Value = "número";
+						w.Add("número");
 					}
 					//Si no fue ninguna de las anteriores, enotnces es un error
 					else
 					{
+						int l = Linea_num(token);//buscamos el numero de linea del token con error
+						string error = "ERROR LEXICO:" + " Linea " + l+". '" + token.ToString() + "' no se reconoce";
+						Errores.Add(error);//Agregamos el error a lista
 						DataGredView_Tokens.Rows[count].Cells[0].Value = "Error léxico";
 						DataGredView_Tokens.Rows[count].Cells[0].Style.ForeColor = Color.Red;
 						DataGredView_Tokens.Rows[count].Cells[1].Style.ForeColor = Color.Red;
@@ -426,9 +448,12 @@ namespace Proyecto_Compiladores_2023
 				}
 			}
 		}
-		#endregion
+        #endregion
 
-		private void button6_Click(object sender, EventArgs e)
+
+
+        #region Construccion canonica
+        private void button6_Click(object sender, EventArgs e)
 		{
 			//Usamos el Textbox5 como control para mostrar informacion de los estados
 			GeneradorDeColeccionCanonica.informacion = textBox7;
@@ -483,7 +508,7 @@ namespace Proyecto_Compiladores_2023
 
 		private void mostrar_colecciones()
 		{
-			textBox5.Text += "Numero de Colecciones: " + GeneradorDeColeccionCanonica.C.Count + Environment.NewLine;
+			textBox7.Text += "Numero de Colecciones: " + GeneradorDeColeccionCanonica.C.Count + Environment.NewLine;
 			for (int i = 0; i < GeneradorDeColeccionCanonica.automata.estado.Count; i++)
 			{
 				EstadoLR estado = GeneradorDeColeccionCanonica.automata.estado[i];
@@ -540,5 +565,74 @@ namespace Proyecto_Compiladores_2023
 
 			}
 		}
-	}
+        #endregion
+
+
+
+        #region Metodos del Analisador Sintactico
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+			if(TextBox_Programa.Text.Length >= 0)
+			{
+				Errores.Clear();
+				label18.Text = "";
+				w.Clear();
+                treeView1.Nodes.Clear();
+                //btnIdentificarTokens_Click(sender, e);
+                if (Errores.Count > 0)
+				{
+					MostrarErrores();
+				}
+				else
+				{
+                    button6_Click(sender, e);
+					w.Add("d"); w.Add("b");// cadena de prueba
+					w.Add("$");
+					Analizador_Sintactico A_Sintactico = new Analizador_Sintactico(w, dataGridView3, dataGridView4, treeView1);
+					if(A_Sintactico.Error.CompareTo("s/n") == 0)
+					{
+                        label18.ForeColor = Color.Green;
+						label18.Text = "Si pertenece a la Gramtica";
+                    }
+					else
+					{
+						int l = Linea_num(A_Sintactico.Error);
+                        string error = "ERROR SINTACTICO: No pertenece a la grmatica";
+                        Errores.Add(error);
+						MostrarErrores();
+					}
+                }
+				tabControl1.SelectedIndex = 2;
+            }
+        }
+
+		private void MostrarErrores()
+		{
+			Errores.Insert(0, "Se encontraron uno o mas errores en el programa:\n");
+
+            label18.ForeColor = Color.Red;
+			label18.Text = string.Join("\n", Errores);
+        }
+
+		private int Linea_num(string token)
+		{
+			for(int i = 0; i < TextBox_Programa.Lines.Length; i++)
+			{
+                string cad = TextBox_Programa.Lines[i].ToString();
+                string[] tokens = cad.Split(' ');
+				foreach(string token_aux in tokens)
+				{
+					if(token.CompareTo(token_aux) == 0)
+					{
+						return i + 1;
+					}
+				}
+            }
+
+			return 0;
+		}
+
+        #endregion
+    }
 }
