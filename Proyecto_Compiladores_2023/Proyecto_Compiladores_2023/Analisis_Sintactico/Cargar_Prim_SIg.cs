@@ -14,9 +14,9 @@ namespace Proyecto_Compiladores_2023.Analisis_Sintactico
         public Cargar_Prim_SIg() 
         {
             Primero();
-            //Siguiente();
+            Siguiente();
             //Siguiente2();
-            Siguiente3();//funciona tambien con el ejemplo del arbol
+            //Siguiente3();//funciona tambien con el ejemplo del arbol
         }
 
         private void Primero()

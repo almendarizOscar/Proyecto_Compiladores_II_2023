@@ -23,8 +23,8 @@ namespace Proyecto_Compiladores_2023
 		public ExpresionFormalDeG()
 		{
             //gramatica2();
-            gramatica3();		//funciona tambien con el ejemplo del arbol	
-            //gramatica_TINY();
+            //gramatica3();		//funciona tambien con el ejemplo del arbol	
+            gramatica_TINY();
         }
 
 

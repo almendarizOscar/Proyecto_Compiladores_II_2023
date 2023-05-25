@@ -573,13 +573,13 @@ namespace Proyecto_Compiladores_2023
 
         private void button7_Click(object sender, EventArgs e)
         {
-			if(TextBox_Programa.Text.Length >= 0)
+			if(TextBox_Programa.Text.Length > 0)//colocar un = para que funcione la gramatica3
 			{
 				Errores.Clear();
 				label18.Text = "";
 				w.Clear();
                 treeView1.Nodes.Clear();
-                //btnIdentificarTokens_Click(sender, e);
+                btnIdentificarTokens_Click(sender, e);//comentar pra las pruebas
                 if (Errores.Count > 0)
 				{
 					MostrarErrores();
@@ -587,7 +587,7 @@ namespace Proyecto_Compiladores_2023
 				else
 				{
                     button6_Click(sender, e);
-					w.Add("d"); w.Add("b");// cadena de prueba
+					//w.Add("d"); w.Add("b");// cadena de prueba
 					w.Add("$");
 					Analizador_Sintactico A_Sintactico = new Analizador_Sintactico(w, dataGridView3, dataGridView4, treeView1);
 					if(A_Sintactico.Error.CompareTo("s/n") == 0)
