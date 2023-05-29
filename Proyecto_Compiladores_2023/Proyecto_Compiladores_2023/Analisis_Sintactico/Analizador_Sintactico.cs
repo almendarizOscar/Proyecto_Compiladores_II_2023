@@ -49,7 +49,8 @@ namespace Proyecto_Compiladores_2023.Analisis_Sintactico
             while (true)
             {
                 s = pila.Peek();
-                string aux = Accion(s.id, w[a]);
+                string aux = "";
+                aux = Accion(s.id, w[a]);
                 if (aux[0].Equals('d') == true)//Inciso de desplazar
                 {
                     string aux1 = "";
@@ -64,7 +65,12 @@ namespace Proyecto_Compiladores_2023.Analisis_Sintactico
                 }
                 else if(aux[0].Equals('r') == true)//Inciso de reduccion
                 {
-                    int r = int.Parse(aux[1].ToString());
+                    string aux2 = "";
+                    for (int i = 1; i < aux.Length; i++)
+                    {
+                        aux2 += aux[i];
+                    }
+                    int r = int.Parse(aux2.ToString());
                     int longitud = G.P[r].cuerpo.Count();
 
                     if (pila.Count() > longitud)//verifica que la pila no este vacia y si esta marca error

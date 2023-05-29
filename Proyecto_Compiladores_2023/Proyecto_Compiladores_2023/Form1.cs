@@ -428,8 +428,8 @@ namespace Proyecto_Compiladores_2023
 					//Este condicional verifica si es un némero
 					else if (afd_numero.validar_Lexema(token))
 					{
-						DataGredView_Tokens.Rows[count].Cells[0].Value = "número";
-						w.Add("número");
+						DataGredView_Tokens.Rows[count].Cells[0].Value = "numero";
+						w.Add("numero");
 					}
 					//Si no fue ninguna de las anteriores, enotnces es un error
 					else
@@ -598,7 +598,7 @@ namespace Proyecto_Compiladores_2023
 					else
 					{
 						int l = Linea_num(A_Sintactico.Error);
-                        string error = "ERROR SINTACTICO: No pertenece a la grmatica";
+                        string error = "ERROR SINTACTICO: No pertenece a la gramatica (" + A_Sintactico.Error + ")";
                         Errores.Add(error);
 						MostrarErrores();
 					}
